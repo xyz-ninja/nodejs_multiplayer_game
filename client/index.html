@@ -1,0 +1,23 @@
+<!----
+<script src="libs/socket.io-3.0.5.min.js"></script>
+-->
+<script src="/libs/socketio.js"></script>
+<script>
+    
+    const socket = io();
+
+    var sendData = function() {
+
+        console.log("try emit data");
+
+        socket.emit('evil', {
+            x : 1,
+            y : 2
+        });
+    };
+
+</script>
+
+<button onclick="sendData()">Send</button>
+
+Hello world
