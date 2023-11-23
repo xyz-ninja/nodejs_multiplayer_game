@@ -21,4 +21,41 @@
         }
     });
 
+    // update input
+    document.onkeydown = function(event) {
+        let inputID = "";
+
+        if (event.keyCode === 68) {
+            inputID = "right";
+        } else if (event.keyCode === 83) {
+            inputID = "down";
+        } else if (event.keyCode === 65) {
+            inputID = "left";
+        } else if (event.keyCode === 87) {
+            inputID = "up";
+        }
+
+        if (inputID != "") {
+            console.log("inputID = " + inputID);
+            socket.emit('keyPress', {inputID: inputID, state: true});
+        }
+    }
+
+    document.onkeyup = function(event) {
+        let inputID = "";
+        if (event.keyCode === 68) {
+            inputID = "right";
+        } else if (event.keyCode === 83) {
+            inputID = "down";
+        } else if (event.keyCode === 65) {
+            inputID = "left";
+        } else if (event.keyCode === 87) {
+            inputID = "up";
+        }
+
+        if (inputID != "") {
+            socket.emit('keyPress', {inputID: inputID, state: false});
+        }
+    }
+
 </script>
