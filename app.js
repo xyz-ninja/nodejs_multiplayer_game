@@ -40,7 +40,6 @@ class Player {
         if (this.isMoveDown) { this.y += this.maxSpeed; }
         if (this.isMoveLeft) { this.x -= this.maxSpeed; }
         if (this.isMoveRight) { this.x += this.maxSpeed; }
-        console.log("x: " + this.x + ", y: " + this.y);
     }
 }
 

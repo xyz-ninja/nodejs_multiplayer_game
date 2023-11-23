@@ -36,7 +36,6 @@
         }
 
         if (inputID != "") {
-            console.log("inputID = " + inputID);
             socket.emit('keyPress', {inputID: inputID, state: true});
         }
     }
