@@ -17,6 +17,8 @@ app.use('/libs', express.static(__dirname + '/libs'));
 
 server.listen(2000);
 
+let socketsList = {};
+
 console.log("Server started");
 
 var io = require('socket.io') (server, {
@@ -32,7 +34,39 @@ var io = require('socket.io') (server, {
 io.sockets.on('connection', function(socket) {
     console.log("Sockets connection established");
 
-    socket.on('evil', function(data) {
-        console.log('evil socket comes x ' + data.x + ' y ' + data.y);
+    socket.id = Math.random();
+    socket.x = 0;
+    socket.y = 0;
+    socket.number = "" + Math.floor(10 * Math.random());
+
+    socketsList[socket.id] = socket;
+
+    socket.on('disconnect', function() {
+        delete socketsList[socket.id];
     });
 });
+
+let mainloopDelay = 100 / 25;
+
+setInterval(function() {
+
+    let pack = [];
+
+    for (let i in socketsList) {
+        let socket = socketsList[i];
+        socket.x += 1;
+        socket.y += 1;
+        
+        pack.push({
+            x : socket.x,
+            y : socket.y,
+            number : socket.number
+        });
+    }
+
+    for (let i in socketsList) {
+        let socket = socketsList[i];
+        socket.emit('newPositions', pack);
+    }
+
+}, mainloopDelay);
