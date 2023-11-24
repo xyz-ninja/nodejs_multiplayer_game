@@ -15,9 +15,16 @@
     socket.on('newPositions', function(data) {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-        for (let i = 0; i < data.length; i++) {
-            let currentData = data[i];
+		// update players
+        for (let i = 0; i < data.players.length; i++) {
+            let currentData = data.players[i];
             ctx.fillText(currentData.number, currentData.x, currentData.y);
+        }
+
+		// update bullets
+		for (let i = 0; i < data.bullets.length; i++) {
+            let currentData = data.bullets[i];
+            ctx.fillRect(currentData.x - 5, currentData.y - 5, 10, 10);
         }
     });
 

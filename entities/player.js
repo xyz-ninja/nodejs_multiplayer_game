@@ -40,23 +40,6 @@ class Player extends Entity {
 		delete Player.list[socket.id];
 	}
 
-	static updateSocketPack() {
-		let pack = [];
-
-		for (let i in Player.list) {
-			let player = Player.list[i];
-			player.update();
-			
-			pack.push({
-				x : player.x,
-				y : player.y,
-				number : player.number
-			});
-		}
-
-		return pack;
-	}
-
     updatePosition() {
         this.updateSpeed();
         super.updatePosition()
@@ -79,6 +62,23 @@ class Player extends Entity {
             this.speedX = 0; 
         }
     }
+
+	static updateSocketPack() {
+		let pack = [];
+
+		for (let i in Player.list) {
+			let player = Player.list[i];
+			player.update();
+			
+			pack.push({
+				x : player.x,
+				y : player.y,
+				number : player.number
+			});
+		}
+
+		return pack;
+	}
 }
 
 module.exports = Player;

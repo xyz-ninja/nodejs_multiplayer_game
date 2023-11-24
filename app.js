@@ -1,13 +1,13 @@
-
 const port = 2000;
 
+// imports
 var express = require('express');
 var app = express();
 
 var server = require('http').Server(app);
 
-require("./entities/entity");
 let Player = require("./entities/player");
+let Bullet = require("./entities/bullet");
 
 // редирект с главной ссылки
 app.get('/', function(req, res) {
@@ -48,17 +48,19 @@ io.sockets.on('connection', function(socket) {
 		delete socketsList[socket.id];
 		Player.onDisconnect(socket);
 	});
-    //playersList[socket.id] = player;
 });
 
 let mainloopDelay = 100 / 25;
 
 setInterval(function() {
-	let pack = Player.updateSocketPack();
+	let packs = {
+		players : Player.updateSocketPack(),
+		bullets : Bullet.updateSocketPack()
+	}
 
     for (let i in socketsList) {
         let socket = socketsList[i];
-        socket.emit('newPositions', pack);
+        socket.emit('newPositions', packs);
     }
 
 }, mainloopDelay);
