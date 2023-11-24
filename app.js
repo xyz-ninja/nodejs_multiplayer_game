@@ -48,6 +48,13 @@ io.sockets.on('connection', function(socket) {
 		delete socketsList[socket.id];
 		Player.onDisconnect(socket);
 	});
+
+    socket.on('sendMessageToServer', function(message) {
+        let playerName = ("" + socket.id).slice(2, 7);
+        for (let i in socketsList) {
+            socketsList[i].emit("addToChat", playerName + ': ' + message);
+        }
+    });
 });
 
 let mainloopDelay = 100 / 25;

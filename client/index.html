@@ -25,12 +25,11 @@
 
     const socket = io();
 
-	// VIDEO 3:57
-
 	chatForm.onsubmit = function(event) {
-		e.preventDefault();
-
-	};
+		event.preventDefault();
+        socket.emit('sendMessageToServer', chatInput.value);
+        chatInput.value = '';
+    };
 
 	socket.on('addToChat', function(data) {
 		chatText.innerHTML += '<div>' + data + '</div>';
