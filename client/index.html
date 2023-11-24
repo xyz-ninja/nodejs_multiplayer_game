@@ -1,8 +1,21 @@
 <canvas id="ctx" width="500" height="500" style="border:1px solid #111">
 </canvas>
 
+<div id="chat-text" style="width: 500px; height: 100px; overflow-y: scroll;">
+	<div>Hello!</div>
+</div>
+
+<form id="chat-form">
+	<input id="chat-input" type="text" style="width:500px">
+	</input>
+</form>
+
 <script src="/libs/socketio.js"></script>
 <script>
+
+	let chatText = document.getElementById("chat-text");
+	let chatForm = document.getElementById("chat-form");
+	let chatInput = document.getElementById("chat-input");
 
     var ctx = document.getElementById("ctx").getContext("2d");
     ctx.font = '30px Arial';
@@ -11,6 +24,17 @@
     const HEIGHT = 500;
 
     const socket = io();
+
+	// VIDEO 3:57
+
+	chatForm.onsubmit = function(event) {
+		e.preventDefault();
+
+	};
+
+	socket.on('addToChat', function(data) {
+		chatText.innerHTML += '<div>' + data + '</div>';
+	});
 
     socket.on('newPositions', function(data) {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
