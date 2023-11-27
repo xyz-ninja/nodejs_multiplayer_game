@@ -40,9 +40,16 @@ io.sockets.on('connection', function(socket) {
     socket.id = Math.random();
     socketsList[socket.id] = socket;
 
-    let player = new Player(socket.id);
-    //player.onConnect(socket);
-    Player.onConnect(socket);
+    socket.on('signIn', function(data) {
+        if (data.username === "admin" && data.password === "12345") {
+            let player = new Player(socket.id);
+            Player.onConnect(socket);
+        
+            socket.emit('signInResponse', {success: true});
+        } else {
+            socket.emit('signInResponse', {success: false});
+        }
+    });
 
 	//Player.onConnect(socket);
 
