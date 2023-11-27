@@ -14,6 +14,9 @@ class Player extends Entity {
         this.isMoveLeft = false;
         this.isMoveUp = false;
 
+		this.isShoot = false;
+		this.mouseAngle = 0;
+
         this.maxSpeed = 10;
 
 		Player.list[id] = this;
@@ -34,6 +37,13 @@ class Player extends Entity {
 			} else if (data.inputID === "down") {
 				player.isMoveDown = data.state;
 			}
+
+			if (data.inputID === "attack") {
+				player.isAttack = data.state;
+			}
+			if (data.inputID === "mouseAngle") {
+				player.mouseAngle = data.state;
+			}
 		});
 	}
 
@@ -44,8 +54,8 @@ class Player extends Entity {
 	update() {
 		super.update();
 		
-		if (Math.random() < 0.1) {
-			this.shootBullet(Math.random() * 360);
+		if (this.isAttack) {
+			this.shootBullet(this.mouseAngle);
 		}
 	}
 
