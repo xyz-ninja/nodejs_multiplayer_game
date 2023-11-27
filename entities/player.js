@@ -1,4 +1,5 @@
 let Entity = require("./entity");
+let Bullet = require("./bullet");
 
 class Player extends Entity {
     constructor(id, list) {
@@ -40,6 +41,14 @@ class Player extends Entity {
 		delete Player.list[socket.id];
 	}
 
+	update() {
+		super.update();
+		
+		if (Math.random() < 0.1) {
+			this.shootBullet(Math.random() * 360);
+		}
+	}
+
     updatePosition() {
         this.updateSpeed();
         super.updatePosition()
@@ -78,6 +87,12 @@ class Player extends Entity {
 		}
 
 		return pack;
+	}
+
+	shootBullet(angle) {
+		let bullet = new Bullet(angle);
+		bullet.x = this.x;
+		bullet.y = this.y;
 	}
 }
 

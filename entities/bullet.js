@@ -27,12 +27,6 @@ class Bullet extends Entity {
 	}
 
 	static updateSocketPack() {
-
-		// test
-		if (Math.random() < 0.1) {
-			new Bullet(Math.random() * 360);
-		}
-
 		let pack = [];
 
 		for (let i in Bullet.list) {
