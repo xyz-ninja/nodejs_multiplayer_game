@@ -41,12 +41,13 @@ class Bullet extends Entity {
 	static updateSocketPack() {
 		let pack = [];
 
-		for (let i in EntityManager.getBullets()) {
-			let bullet = EntityManager.getBullets()[i];
+		let bullets = EntityManager.getBullets();
+		for (let i in bullets) {
+			let bullet = bullets[i];
 			bullet.update();
 			
 			if (bullet.toRemove) {
-				delete EntityManager.getBullets()[i];
+				delete bullets[i];
 			} else {
 				pack.push({
 					x : bullet.x,
