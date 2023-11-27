@@ -13,11 +13,26 @@ signFormSignInButton.onclick = function() {
 	});
 }
 
+signFormSignUpButton.onclick = function() {
+	socket.emit('signUp', {
+		username: signFormUsername.value,
+		password: signFormPassword.value
+	});
+}
+
 socket.on('signInResponse', function(data) {
 	if (data.success) {
 		signForm.style.display = 'none';
 		gameContainer.style.display = 'inline-block';
 	} else {
 		alert("Wrong username or password");
+	}
+});
+
+socket.on('signUpResponse', function(data) {
+	if (data.success) {
+		alert("Sign up successfully!");
+	} else {
+		alert("Username already taken");
 	}
 });

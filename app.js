@@ -41,16 +41,7 @@ io.sockets.on('connection', function(socket) {
     socket.id = Math.random();
     socketsList[socket.id] = socket;
 
-    socket.on('signIn', function(data) {
-        if (Auth.isValidPassword(data.username, data.password)) {
-            let player = new Player(socket.id);
-            Player.onConnect(socket);
-        
-            socket.emit('signInResponse', {success: true});
-        } else {
-            socket.emit('signInResponse', {success: false});
-        }
-    });
+    Auth.onConnect(socket);
 
 	//Player.onConnect(socket);
 
