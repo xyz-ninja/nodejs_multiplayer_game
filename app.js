@@ -6,6 +6,7 @@ var app = express();
 
 var server = require('http').Server(app);
 
+let Auth = require("./auth/auth");
 let Player = require("./entities/player");
 let Bullet = require("./entities/bullet");
 
@@ -41,7 +42,7 @@ io.sockets.on('connection', function(socket) {
     socketsList[socket.id] = socket;
 
     socket.on('signIn', function(data) {
-        if (data.username === "admin" && data.password === "12345") {
+        if (Auth.isValidPassword(data.username, data.password)) {
             let player = new Player(socket.id);
             Player.onConnect(socket);
         
