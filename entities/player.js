@@ -1,3 +1,4 @@
+let EntityManager = require('./entityManager');
 let Entity = require("./entity");
 let Bullet = require("./bullet");
 
@@ -6,7 +7,7 @@ class Player extends Entity {
         super();
         
         this.id = id;
-        this.list = list;
+        //this.list = list;
 		this.number = "" + Math.floor(10 * Math.random());
 
         this.isMoveUp = false;
@@ -19,10 +20,10 @@ class Player extends Entity {
 
         this.maxSpeed = 10;
 
-		Player.list[id] = this;
+		EntityManager.getPlayers()[id] = this;
     }
 
-	static list = {};
+	//static list = {};
 
 	static onConnect(socket) {
 		var player = new Player(socket.id);
@@ -48,7 +49,7 @@ class Player extends Entity {
 	}
 
 	static onDisconnect(socket) {
-		delete Player.list[socket.id];
+		delete EntityManager.getPlayers()[socket.id];
 	}
 
 	update() {
@@ -85,8 +86,9 @@ class Player extends Entity {
 	static updateSocketPack() {
 		let pack = [];
 
-		for (let i in Player.list) {
-			let player = Player.list[i];
+		let players = EntityManager.getPlayers();
+		for (let i in players) {
+			let player = players[i];
 			player.update();
 			
 			pack.push({
@@ -100,7 +102,7 @@ class Player extends Entity {
 	}
 
 	shootBullet(angle) {
-		let bullet = new Bullet(angle);
+		let bullet = new Bullet(this.id, angle);
 		bullet.x = this.x;
 		bullet.y = this.y;
 	}

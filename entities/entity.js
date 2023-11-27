@@ -15,6 +15,10 @@ class Entity {
         this.x += this.speedX;
         this.y += this.speedY;
     }
+
+    getDistanceTo(entity) {
+        return Math.sqrt(Math.pow(this.x - entity.x, 2) + Math.pow(this.y - entity.y, 2));
+    }
 }
 
 module.exports = Entity;

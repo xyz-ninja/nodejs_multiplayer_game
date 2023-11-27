@@ -41,8 +41,10 @@ io.sockets.on('connection', function(socket) {
     socketsList[socket.id] = socket;
 
     let player = new Player(socket.id);
+    //player.onConnect(socket);
+    Player.onConnect(socket);
 
-	Player.onConnect(socket);
+	//Player.onConnect(socket);
 
 	socket.on('disconnect', function() {
 		delete socketsList[socket.id];
