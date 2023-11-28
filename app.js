@@ -8,6 +8,7 @@ var app = express();
 var server = require('http').Server(app);
 
 let Auth = require("./auth/auth");
+let EntityManager = require("./entities/entityManager");
 let Player = require("./entities/player");
 let Bullet = require("./entities/bullet");
 
@@ -61,13 +62,6 @@ io.sockets.on('connection', function(socket) {
 
 let mainloopDelay = 100 / 25;
 
-let initPack = {
-	player : [],
-	bullet : []
-};
-
-let removePack = structuredClone(initPack);
-
 setInterval(function() {
 	let packs = {
 		players : Player.updateSocketPack(),
@@ -76,19 +70,14 @@ setInterval(function() {
 
     for (let i in socketsList) {
         let socket = socketsList[i];
-		socket.emit('init', initPack);
+		socket.emit('init', EntityManager.initPack);
         socket.emit('update', packs);
-		socket.emit('remove', removePack);
+		socket.emit('remove', EntityManager.removePack);
 	}
 
-	initPack.player = [];
-	initPack.bullet = [];
-	removePack.player = [];
-	removePack.bullet = [];
+	EntityManager.initPack.players = [];
+	EntityManager.initPack.bullets = [];
+	EntityManager.removePack.players = [];
+	EntityManager.removePack.bullets = [];
 
 }, mainloopDelay);
-
-module.exports = {
-	initPack : initPack,
-	removePack : removePack
-}

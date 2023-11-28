@@ -17,7 +17,7 @@ class Bullet extends Entity {
 	
 		EntityManager.getBullets()[this.id] = this;
 	
-		App.initPack.bullet.push({
+		EntityManager.initPack.bullets.push({
 			id : this.id,
 			x : this.x,
 			y : this.y,
@@ -53,7 +53,10 @@ class Bullet extends Entity {
 			bullet.update();
 			
 			if (bullet.toRemove) {
-				this.remove();
+				EntityManager.removePack.bullets.push(this.id);
+
+				delete bullets[i];
+			
 			} else {
 				pack.push({
 					id : bullet.id,
@@ -64,12 +67,6 @@ class Bullet extends Entity {
 		}
 
 		return pack;
-	}
-
-	remove() {
-		App.removePack.bullet.push(this.id);
-
-		delete bullets[i];
 	}
 }
 
