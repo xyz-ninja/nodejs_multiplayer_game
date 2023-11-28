@@ -1,4 +1,5 @@
 let Player = require('../entities/player');
+let Mongo = require('../mongodb');
 
 let users = {
     "admin" : "12345",
@@ -8,7 +9,7 @@ let users = {
 
 function onConnect(socket) {
 	socket.on('signIn', function(data) {
-        checkCredentials(data.username, data.password, (result) => { 
+            checkCredentials(data.username, data.password, (result) => { 
             if (result) {
                 let player = new Player(socket.id);
                 Player.onConnect(socket);
@@ -34,23 +35,29 @@ function onConnect(socket) {
 }
 
 function addUser(username, password, callback) {
-    setTimeout(function() {
-        users[username] = password;
+    Mongo.db.insert({username: username, password: password}, function(err) {
         callback();
-    }, 10);
+    });
 }
 
 function checkUsernameTaken(username, callback) {
-    // emit delay
-    setTimeout(function() {
-	    callback(users[username] !== undefined);	
-    }, 10);
+    Mongo.db.find({username: username}, function(err, result) {
+        if (result.length > 0) {
+	        callback(true);
+        } else {
+            callback(false);
+        }
+    });
 }
 
 function checkCredentials(username, password, callback) {
-    setTimeout(function() {
-	    callback(users[username] === password);
-    }, 10);
+    Mongo.db.find({username: username, password: password}, function(err, result) {
+        if (result.length > 0) {
+	        callback(true);
+        } else {
+            callback(false);
+        }
+    });
 }
 
 module.exports = {
