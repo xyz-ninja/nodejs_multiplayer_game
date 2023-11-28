@@ -1,9 +1,7 @@
 var mongojs = require('mongojs');
 
-class MongoDB {
-	constuctor() {
-		this.db = mongojs('localhost:27017/exampleGame', ['account', 'progress']);
-	}
-}
+let db = mongojs('localhost:27017/exampleGame', ['account', 'progress']);
 
-module.exports = MongoDB;
+module.exports = {
+	db: db
+};

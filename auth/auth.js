@@ -35,13 +35,13 @@ function onConnect(socket) {
 }
 
 function addUser(username, password, callback) {
-    Mongo.db.insert({username: username, password: password}, function(err) {
+    Mongo.db.account.insert({username: username, password: password}, function(err) {
         callback();
     });
 }
 
 function checkUsernameTaken(username, callback) {
-    Mongo.db.find({username: username}, function(err, result) {
+    Mongo.db.account.find({username: username}, function(err, result) {
         if (result.length > 0) {
 	        callback(true);
         } else {
@@ -51,7 +51,7 @@ function checkUsernameTaken(username, callback) {
 }
 
 function checkCredentials(username, password, callback) {
-    Mongo.db.find({username: username, password: password}, function(err, result) {
+    Mongo.db.account.find({username: username, password: password}, function(err, result) {
         if (result.length > 0) {
 	        callback(true);
         } else {
