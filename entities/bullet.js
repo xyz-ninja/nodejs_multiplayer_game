@@ -16,6 +16,12 @@ class Bullet extends Entity {
 		this.toRemove = false;
 	
 		EntityManager.getBullets()[this.id] = this;
+	
+		App.initPack.bullet.push({
+			id : this.id,
+			x : this.x,
+			y : this.y,
+		});
 	}
 
 	static list = {};
@@ -47,9 +53,10 @@ class Bullet extends Entity {
 			bullet.update();
 			
 			if (bullet.toRemove) {
-				delete bullets[i];
+				this.remove();
 			} else {
 				pack.push({
+					id : bullet.id,
 					x : bullet.x,
 					y : bullet.y
 				});
@@ -57,6 +64,12 @@ class Bullet extends Entity {
 		}
 
 		return pack;
+	}
+
+	remove() {
+		App.removePack.bullet.push(this.id);
+
+		delete bullets[i];
 	}
 }
 

@@ -61,6 +61,13 @@ io.sockets.on('connection', function(socket) {
 
 let mainloopDelay = 100 / 25;
 
+let initPack = {
+	player : [],
+	bullet : []
+};
+
+let removePack = structuredClone(initPack);
+
 setInterval(function() {
 	let packs = {
 		players : Player.updateSocketPack(),
@@ -69,7 +76,19 @@ setInterval(function() {
 
     for (let i in socketsList) {
         let socket = socketsList[i];
-        socket.emit('newPositions', packs);
-    }
+		socket.emit('init', initPack);
+        socket.emit('update', packs);
+		socket.emit('remove', removePack);
+	}
+
+	initPack.player = [];
+	initPack.bullet = [];
+	removePack.player = [];
+	removePack.bullet = [];
 
 }, mainloopDelay);
+
+module.exports = {
+	initPack : initPack,
+	removePack : removePack
+}

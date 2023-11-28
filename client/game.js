@@ -1,7 +1,3 @@
-let chatText = document.getElementById("chat-text");
-let chatForm = document.getElementById("chat-form");
-let chatInput = document.getElementById("chat-input");
-
 var ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = '30px Arial';
 
@@ -10,83 +6,98 @@ const HEIGHT = 500;
 const HALF_WIDTH = WIDTH / 2;
 const HALF_HEIGHT = HEIGHT / 2;
 
-chatForm.onsubmit = function(event) {
-	event.preventDefault();
-	socket.emit('sendMessageToServer', chatInput.value);
-	chatInput.value = '';
-};
+class Player {
+	constructor(initPack) {
+		this.id = initPack.id;
+		this.number = initPack.number;
+		this.x = initPack.x;
+		this.y = initPack.y;
 
-socket.on('addToChat', function(data) {
-	chatText.innerHTML += '<div>' + data + '</div>';
-});
+		Player.list[this.id] = this;
+	}
 
-socket.on('newPositions', function(data) {
-	ctx.clearRect(0, 0, WIDTH, HEIGHT);
+	static list = {};
+}
 
-	// update players
+class Bullet {
+	constructor(initPack) {
+		this.id = initPack.id;
+		this.x = initPack.x;
+		this.y = initPack.y;
+		Bullet.list[this.id] = this;
+	}
+
+	static list = {};
+}
+
+// init
+// update
+// remove
+
+socket.on('init', function(data) {
 	for (let i = 0; i < data.players.length; i++) {
-		let currentData = data.players[i];
-		ctx.fillText(currentData.number, currentData.x, currentData.y);
+		new Player(data.players[i]);
 	}
 
-	// update bullets
 	for (let i = 0; i < data.bullets.length; i++) {
-		let currentData = data.bullets[i];
-		ctx.fillRect(currentData.x - 5, currentData.y - 5, 10, 10);
+		new Bullet(data.bullets[i]);
 	}
 });
 
-// update input
-document.onkeydown = function(event) {
-	let inputID = "";
+socket.on('update', function(data) {
+	for (let i = 0; i < data.players.length; i++) {
+		let pack = data.players[i];
+		let player = Player.list[pack.id];
 
-	if (event.keyCode === 68) {
-		inputID = "right";
-	} else if (event.keyCode === 83) {
-		inputID = "down";
-	} else if (event.keyCode === 65) {
-		inputID = "left";
-	} else if (event.keyCode === 87) {
-		inputID = "up";
+		if (player) {
+			if (player.x != undefined) {
+				player.x = pack.x;
+			}
+			
+			if (player.y != undefined) {
+				player.y = pack.y;
+			}
+		}
 	}
 
-	if (inputID != "") {
-		socket.emit('keyPress', {inputID: inputID, state: true});
+	for (let i = 0; i < data.bullets.length; i++) {
+		let pack = data.bullets[i];
+		let bullet = Bullet.list[pack.id];
+
+		if (bullet) {
+			if (bullet.x != undefined) {
+				bullet.x = pack.x;
+			}
+			
+			if (bullet.y != undefined) {
+				bullet.y = pack.y;
+			}
+		}
 	}
-}
+});
 
-document.onkeyup = function(event) {
-	let inputID = "";
-	if (event.keyCode === 68) {
-		inputID = "right";
-	} else if (event.keyCode === 83) {
-		inputID = "down";
-	} else if (event.keyCode === 65) {
-		inputID = "left";
-	} else if (event.keyCode === 87) {
-		inputID = "up";
+socket.on('remove', function(data) {
+	for (let i = 0; i < data.players.length; i++) {
+		delete Player.list[data.players[i]];
 	}
 
-	if (inputID != "") {
-		socket.emit('keyPress', {inputID: inputID, state: false});
+	for (let i = 0; i < data.bullets.length; i++) {
+		delete Bullet.list[data.bullets[i]];
 	}
-}
+});
 
-// attack
-document.onmousedown = function(event) {
-	socket.emit('keyPress', {inputID: "attack", state: true});
-}
+// update loop
+setInterval(function() {
+	ctx.clearRect(0, 0, 500, 500);
+	
+	for (let i in Player.list) {
+		let player = Player.list[i];
+		ctx.fillText(player.number, player.x, player.y);
+	}
 
-document.onmouseup = function(event) {
-	socket.emit('keyPress', {inputID: "attack", state: false});
-}
+	for (let i in Bullet.list) {
+		let bullet = Bullet.list[i];
+		ctx.fillRect(bullet.x - 5, bullet.y - 5, 10, 10);
+	}
 
-document.onmousemove = function(event) {
-	let x = -HALF_WIDTH + event.clientX - 8;
-	let y = -HALF_HEIGHT + event.clientY - 8;
-	let angle = (Math.atan2(y, x) / Math.PI * 180);
-
-	//console.log(angle);
-
-	socket.emit('keyPress', {inputID: "mouseAngle", state: angle});
-}
+}, 100);

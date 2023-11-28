@@ -1,3 +1,4 @@
+let App = require('../app');
 let EntityManager = require('./entityManager');
 let Entity = require("./entity");
 let Bullet = require("./bullet");
@@ -21,6 +22,12 @@ class Player extends Entity {
         this.maxSpeed = 10;
 
 		EntityManager.getPlayers()[id] = this;
+
+		App.initPack.player.push({
+			id : this.id,
+			x : this.x,
+			y : this.y,
+		});
     }
 
 	//static list = {};
@@ -49,7 +56,7 @@ class Player extends Entity {
 	}
 
 	static onDisconnect(socket) {
-		delete EntityManager.getPlayers()[socket.id];
+		this.remove();
 	}
 
 	update() {
@@ -92,9 +99,9 @@ class Player extends Entity {
 			player.update();
 			
 			pack.push({
+				id : player.id,
 				x : player.x,
-				y : player.y,
-				number : player.number
+				y : player.y
 			});
 		}
 
@@ -105,6 +112,11 @@ class Player extends Entity {
 		let bullet = new Bullet(this.id, angle);
 		bullet.x = this.x;
 		bullet.y = this.y;
+	}
+
+	remove() {
+		App.removePack.player.push(this.id);
+		delete EntityManager.getPlayers()[socket.id];
 	}
 }
 
